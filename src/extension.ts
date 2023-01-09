@@ -78,7 +78,7 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	];
 
-	function getWebviewContent(randomIndex: string[]) {
+	function getWebviewContent(randomMessage: string[]) {
 		return `<!DOCTYPE html>
 		<html lang="ja">
 			<head>
@@ -99,13 +99,13 @@ export function activate(context: vscode.ExtensionContext) {
 			<body>
 				<ul id="messageList" class="message-list">
 					<li class="message-item">
-						<p>${randomIndex[0]}</p>
+						<p>${randomMessage[0]}</p>
 					</li>
 					<li class="message-item">
-						<p>${randomIndex[1]}</p>
+						<p>${randomMessage[1]}</p>
 					</li>
 					<li class="message-item">
-						<p>${randomIndex[2]}</p>
+						<p>${randomMessage[2]}</p>
 					</li>
 				</ul>
 			</body>
@@ -120,7 +120,7 @@ export function activate(context: vscode.ExtensionContext) {
 		let refuseResult = refuseMessages.filter(message => message.who === who).filter(message => message.what === what);
 
 		const array = refuseResult.flatMap(result => result.message);
-		const randomIndex = randomSelect(array.slice(), 3);
+		const randomMessage = randomSelect(array.slice(), 3);
 
 
 
@@ -151,7 +151,7 @@ export function activate(context: vscode.ExtensionContext) {
 				{}
 			);
 
-			panel.webview.html = getWebviewContent(randomIndex);
+			panel.webview.html = getWebviewContent(randomMessage);
 		}
 
 	});
