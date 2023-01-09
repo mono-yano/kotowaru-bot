@@ -78,20 +78,38 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	];
 
-	function getWebviewContent(randomIndex) {
-		// return refuseResult[randomIndex].message;
-		// return  console.dir(randomIndex);
-		return randomIndex;
-		// return `<!DOCTYPE html>
-		// <html lang="ja">
-		// 	<head>
-		// 		<meta charset="UTF-8">
-		// 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		// 	</head>
-		// 	<body>
-		// 		<ul id="messageList"></ul>
-		// 	</body>
-		// </html>`;
+	function getWebviewContent(randomIndex: string[]) {
+		return `<!DOCTYPE html>
+		<html lang="ja">
+			<head>
+				<meta charset="UTF-8">
+				<meta name="viewport" content="width=device-width, initial-scale=1.0">
+				<style>
+					.message-list {
+						display: flex;
+						flex-direction: column;
+						gap: 10px;
+					}
+					.message-item {
+						list-style: none;
+					}
+				</style>
+
+			</head>
+			<body>
+				<ul id="messageList" class="message-list">
+					<li class="message-item">
+						<p>${randomIndex[0]}</p>
+					</li>
+					<li class="message-item">
+						<p>${randomIndex[1]}</p>
+					</li>
+					<li class="message-item">
+						<p>${randomIndex[2]}</p>
+					</li>
+				</ul>
+			</body>
+		</html>`;
 	}
 
 	let result = vscode.commands.registerCommand('vscode-refuse.refuse', async() => {
@@ -102,16 +120,13 @@ export function activate(context: vscode.ExtensionContext) {
 		let refuseResult = refuseMessages.filter(message => message.who === who).filter(message => message.what === what);
 
 		const array = refuseResult.flatMap(result => result.message);
-		const randomIndex = randomSelect(array.slice(), 2);
+		const randomIndex = randomSelect(array.slice(), 3);
 
-		// for (var i = 0; i < randomIndex.length; i++) {
-		// 	var messageList = vscode.DocumentDropEdit.createElement('li');
-		// 	messageList.textContent = randomIndex[i];
-		// 	vscode.window.getElementById('list').appendChild(messageList);
-		// }
+
+
 
 		// 配列arrayからランダムにnumberの個数の要素を取り出す
-		function randomSelect(array: any[], number:number)
+		function randomSelect(array: string[], number:number)
 		{
 			let newArray = [];
 			while(newArray.length < number && array.length > 0)
