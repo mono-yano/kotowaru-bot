@@ -10,14 +10,14 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:kotowaru-bot.helloWorld"
+    "*"
   ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "kotowaru-bot.helloWorld",
-        "title": "Hello World"
+        "command": "vscode-refuse.refuse",
+        "title": "断るメッセージを選択する"
       }
     ]
   },
