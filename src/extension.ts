@@ -79,6 +79,7 @@ export function activate(context: vscode.ExtensionContext) {
 	];
 
 	function getWebviewContent(randomMessage: string[]) {
+
 		return `<!DOCTYPE html>
 		<html lang="ja">
 			<head>
@@ -93,19 +94,24 @@ export function activate(context: vscode.ExtensionContext) {
 					.message-item {
 						list-style: none;
 					}
+					.massage-text {
+						user-select: all;
+					}
+					.copy-button {
+						cursor: pointer;
+					}
 				</style>
-
 			</head>
 			<body>
 				<ul id="messageList" class="message-list">
 					<li class="message-item">
-						<p>${randomMessage[0]}</p>
+						<p class="massage-text">${randomMessage[0]}</p>
 					</li>
 					<li class="message-item">
-						<p>${randomMessage[1]}</p>
+						<p class="massage-text">${randomMessage[1]}</p>
 					</li>
 					<li class="message-item">
-						<p>${randomMessage[2]}</p>
+						<p class="massage-text">${randomMessage[2]}</p>
 					</li>
 				</ul>
 			</body>
@@ -121,9 +127,6 @@ export function activate(context: vscode.ExtensionContext) {
 
 		const array = refuseResult.flatMap(result => result.message);
 		const randomMessage = randomSelect(array.slice(), 3);
-
-
-
 
 		// 配列arrayからランダムにnumberの個数の要素を取り出す
 		function randomSelect(array: string[], number:number)
@@ -141,14 +144,14 @@ export function activate(context: vscode.ExtensionContext) {
 			return newArray;
 		}
 
-
-
 		if( what !== undefined) {
 			const panel = vscode.window.createWebviewPanel(
 				'kotowaru',
 				`${who}の方への${what}の断りメッセージは以下になります！`,
 				vscode.ViewColumn.One,
-				{}
+				{
+					enableScripts: true
+				}
 			);
 
 			panel.webview.html = getWebviewContent(randomMessage);
