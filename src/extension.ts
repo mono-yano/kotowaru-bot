@@ -30,6 +30,9 @@ export function activate(context: vscode.ExtensionContext) {
 	];
 
 	function getWebviewContent(randomMessage: string) {
+		function copyToClipboard() {
+            vscode.env.clipboard.writeText(randomMessage);
+        }
 		return `<!DOCTYPE html>
 		<html lang="ja">
 			<head>
@@ -41,11 +44,13 @@ export function activate(context: vscode.ExtensionContext) {
 					}
 					.copy-button {
 						cursor: pointer;
+						border-radius: 5px;
 					}
 				</style>
 			</head>
 			<body>
 				<p class="massage-text">${randomMessage}</p>
+				<button class="copy-button" onclick="${copyToClipboard()}">コピー</button>
 			</body>
 		</html>`;
 	}
@@ -67,6 +72,8 @@ export function activate(context: vscode.ExtensionContext) {
 		}, Array());
 
 		const randomMessage = filteredMessages[Math.floor(Math.random() * filteredMessages.length)];
+
+
 
 		if( what !== undefined) {
 			const panel = vscode.window.createWebviewPanel(
