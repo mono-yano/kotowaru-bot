@@ -29,22 +29,13 @@ export function activate(context: vscode.ExtensionContext) {
 		{who:"同僚",what:"飲み会",how:"フランク",message:"ごめん予定ありです。また誘ってください"}
 	];
 
-	function getWebviewContent(randomMessage: string[]) {
-
+	function getWebviewContent(randomMessage: string) {
 		return `<!DOCTYPE html>
 		<html lang="ja">
 			<head>
 				<meta charset="UTF-8">
 				<meta name="viewport" content="width=device-width, initial-scale=1.0">
 				<style>
-					.message-list {
-						display: flex;
-						flex-direction: column;
-						gap: 10px;
-					}
-					.message-item {
-						list-style: none;
-					}
 					.massage-text {
 						user-select: all;
 					}
@@ -54,17 +45,7 @@ export function activate(context: vscode.ExtensionContext) {
 				</style>
 			</head>
 			<body>
-				<ul id="messageList" class="message-list">
-					<li class="message-item">
-						<p class="massage-text">${randomMessage[0]}</p>
-					</li>
-					<li class="message-item">
-						<p class="massage-text">${randomMessage[1]}</p>
-					</li>
-					<li class="message-item">
-						<p class="massage-text">${randomMessage[2]}</p>
-					</li>
-				</ul>
+				<p class="massage-text">${randomMessage}</p>
 			</body>
 		</html>`;
 	}
@@ -74,26 +55,18 @@ export function activate(context: vscode.ExtensionContext) {
 		const what = await vscode.window.showQuickPick(['案件', '飲み会']);
 		const how = await vscode.window.showQuickPick(['丁寧', 'フランク']);
 
-		let refuseResult = refuseMessages.filter(message => message.who === who).filter(message => message.what === what).filter(message => message.how === how);
+		const isWho = (selected: { who: string; }) => selected.who === who;
+		const isWhat = (selected: { what: string; }) => selected.what === what;
+		const isHow = (selected: { how: string; }) => selected.how === how;
 
-		const array = refuseResult.map(result => result.message);
-		const randomMessage = randomSelect(array.slice(), 3);
-
-		// 配列arrayからランダムにnumberの個数の要素を取り出す
-		function randomSelect(array: string[], number:number)
-		{
-			let newArray = [];
-			while(newArray.length < number && array.length > 0)
-			{
-				// 配列からランダムな要素を選ぶ
-				const random = Math.floor(Math.random() * array.length);
-				// 選んだ要素を別の配列に登録する
-				newArray.push(array[random]);
-				// もとの配列からは削除する
-				array.splice(random, 1);
+		const filteredMessages = refuseMessages.reduce((prev, current) => {
+			if (isWho(current) && isWhat(current) && isHow(current)) {
+				prev.push(current.message);
 			}
-			return newArray;
-		}
+			return prev;
+		}, Array());
+
+		const randomMessage = filteredMessages[Math.floor(Math.random() * filteredMessages.length)];
 
 		if( what !== undefined) {
 			const panel = vscode.window.createWebviewPanel(
